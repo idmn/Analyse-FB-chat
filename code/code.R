@@ -23,4 +23,4 @@ names(nodeList) <- xpathSApply(messages.parsed,"//div[@class = 'thread']/text()"
 ## load other .R files
 source("Analyse-FB-chat/code/getThread.R")
 source("Analyse-FB-chat/code//activity.R")
-source("Analyse-FB-chat/code//wordCount.R")
+source("Analyse-FB-chat/code/wordCount.R")

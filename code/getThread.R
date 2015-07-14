@@ -4,8 +4,7 @@ fbTime <- function(x, locale = 'en_GB'){
         switch(locale,
             'en_GB' = '%A, %d %B %Y at %H:%M',   
             'en_US' = '%A, %B %d, %Y at %I:%M%p'           
-        )
-                     
+        )                     
     )
 }
 
@@ -35,9 +34,21 @@ getThread <- function(x){
     for(i in 1:ncol(data)) names(data[,i]) <- NULL
     for(i in 2:3) data[,i] <- as.character(data[,i])
     ## read datetime
+    ## locale is a global variable, read from the file settiings.hml
     data[[2]] <- fbTime(data[[2]],locale)
     ## names as factors
     data[,1] <- as.factor(data[,1])
     
     data
+}
+
+getPerson <- function(nodeList,person,use.chatnames = F){
+    ## list of data.frames with only one person's messages selected
+    lst <- lapply(nodeList,function(x){
+      data <- getThread(x)
+      data[data$name == person,]
+    })
+    if(!use.chatnames) names(lst) <- NULL
+    ## bind all data.frames
+    do.call(rbind,lst)
 }

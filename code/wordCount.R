@@ -1,50 +1,42 @@
 ### TRY TO USE DATA.TABLE
+library(data.table)
+library(stringr)
 
-require(stringr)
-spl <- split(data[,2],data[,1])
+## first, make this:
+## data <- getThread(nodeList[[%some_number%]])
+## dataT <- data.table(data)
 
-## LENGTH
-len <-(sapply(spl,function(x) mean(nchar(x))))
+## mean length of a message
+len <- dataT[,.(mes_length = mean(nchar(message))), by = name]
 
 ## total number of messages
-numb <- sapply(spl,length)
+numb <- dataT[,.(mes_numb = length(message)), by = name]
 
 
 ## COUNT WORDS
-wordMean <- function(data,regex){
-    spl <- split(data[,2],data[,1])
-    sapply(spl,function(y) mean(str_count(y,regex)))
+regexCount <- function(dataT, regex, ignore_case = T, type = 'ttl'){
+    ## type is 'ttl' or 'avrg'
+    switch(type,
+        'ttl' = {title <-  paste('total n. of',regex)
+                   f <- sum
+                 },
+        'avrg' = {title <- paste('avrg n. of',regex,'per msg')
+                   f <- mean
+                 }          
+    )
+    
+    if(ignore_case) 
+         ans <- dataT[,.(f(str_count(message, ignore.case(regex)))),by = name]
+    else ans <- dataT[,.(f(str_count(message, regex))),by = name]
+    setnames(ans, 'V1', title)
+    ans
 }
 
-wordCount <- function(data,regex){
-    spl <- split(data[,2],data[,1])
-    sapply(spl,function(y) sum(str_count(y,regex)))
-}
 
 wordSearch <- function(data,regex){
     data[grep(regex,data[,2]),]
 }
 
 ## list of regexes
-regexList <- list(huy = "[Õõ][Óó][ÉéÅå¨¸ßÿÈè]",
-                  nu  = "(^| )[Íí][Óó]([ ]|$|.)",
-                  ya  = "(^| )[ßÿ]([ ]|$|.)")
-
-## make a plot ??? wait till internet
-myPlot <- function(x,title,fileName = NULL){
-    if(!is.null(fileName)) png(fileName)
-    else dev.off()
-    barplot(x,main=title)
-    dev.off()
-}
-
-## count letters
-totalLetters <- wordCount(data,"[À-ßà-ÿ]")
-
-
-#### DATA.TABLE !!!
-## something wrong happens with time variable
-dataT <- data.table(data)
-dataT[,.(huy = mean(str_count(message,regex))*100),by = name]
-
-
+regexList <- list(nu  = "(^| )íó([ ]|$|.|,)",
+                  ya  = "(^| )ÿ([ ]|$|.)")
