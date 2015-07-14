@@ -7,10 +7,10 @@ library(stringr)
 ## dataT <- data.table(data)
 
 ## mean length of a message
-len <- dataT[,.(mes_length = mean(nchar(message))), by = name]
+# len <- dataT[,.(mes_length = mean(nchar(message))), by = name]
 
 ## total number of messages
-numb <- dataT[,.(mes_numb = length(message)), by = name]
+# numb <- dataT[,.(mes_numb = length(message)), by = name]
 
 
 ## COUNT WORDS
@@ -23,8 +23,7 @@ regexCount <- function(dataT, regex, ignore_case = T, type = 'ttl'){
         'avrg' = {title <- paste('avrg n. of',regex,'per msg')
                    f <- mean
                  }          
-    )
-    
+    )    
     if(ignore_case) 
          ans <- dataT[,.(f(str_count(message, ignore.case(regex)))),by = name]
     else ans <- dataT[,.(f(str_count(message, regex))),by = name]
@@ -36,7 +35,3 @@ regexCount <- function(dataT, regex, ignore_case = T, type = 'ttl'){
 wordSearch <- function(data,regex){
     data[grep(regex,data[,2]),]
 }
-
-## list of regexes
-regexList <- list(nu  = "(^| )ну([ ]|$|.|,)",
-                  ya  = "(^| )я([ ]|$|.)")

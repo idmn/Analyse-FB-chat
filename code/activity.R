@@ -1,17 +1,15 @@
 #### DAILY ACTIVITY ANALYSIS
 
-require(lubridate)
-require(ggplot2)
+library(lubridate)
+library(ggplot2)
 
 ## daily activity plot function
 ## startTime - the leftmost point on the plot
 dailyActivity <- function(data,startTime = 6){
     time <- hour(data$time) + minute(data$time)/60
     ## values for correct plotting
-    time <- (time - startTime)%%24
-    
+    time <- (time - startTime)%%24    
     df <- data.frame(name = data$name,time)
-        
     togetherPlot <-
         (
             ggplot(df,aes(x=time))
@@ -19,7 +17,6 @@ dailyActivity <- function(data,startTime = 6){
             +scale_x_continuous(limits = c(0,24),breaks = 0:24,
                                 labels=(startTime + 0:24)%%24)
         )
-    
     separatePlot <- 
         (
             ggplot(df,aes(x=time,colour=name))
@@ -27,11 +24,10 @@ dailyActivity <- function(data,startTime = 6){
             +scale_x_continuous(limits = c(0,24),breaks = 0:24,
                                 labels=(startTime + 0:24)%%24)
         )  
-    
     list(togetherPlot,separatePlot)
 }
 
-overallActivity <- function(data,start_date = NULL, end_date = NULL){
+globalActivity <- function(data,start_date = NULL, end_date = NULL){
     ## if not specified, use all the data
     ## if start and end dates are specified as character strings,
     ## convert them to Date

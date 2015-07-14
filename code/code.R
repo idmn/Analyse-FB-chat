@@ -1,9 +1,6 @@
 setwd("D:/Iaroslav/Projects/Facebook")
 Sys.setlocale("LC_CTYPE", "russian")
 Sys.setlocale('LC_TIME','english')
-# messages <- "data/html/messages.htm"
-# page <- readLines(file)
-# Encoding(page) <- "UTF-8"
 
 require(XML)
 messages.parsed <- htmlParse(readLines("data/html/messages.htm"))
