@@ -35,7 +35,10 @@ getThread <- function(x){
     for(i in 2:3) data[,i] <- as.character(data[,i])
     ## read datetime
     ## locale is a global variable, read from the file settings.hml
-    data[[2]] <- fbTime(data[[2]],locale)
+    
+    if(exists('locale')) data[[2]] <- fbTime(data[[2]],locale)
+    else data[[2]] <- fbTime(data[[2]])
+            
     ## names as factors
     data[,1] <- as.factor(data[,1])
     
